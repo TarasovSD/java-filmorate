@@ -1,8 +1,9 @@
-package ru.yandex.practicum.filmorate;
+package ru.yandex.practicum.filmorate.controllers;
 
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.UserPutException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.exception.InputException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.Valid;
@@ -10,18 +11,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 @RestController
+@Slf4j
 public class UserController {
     private HashMap<Integer, User> users = new HashMap<>();
-    List<User> users1=new ArrayList<>();
 
     private int generatorId = 1;
 
 
     @GetMapping("users")
-    public HashMap<Integer, User> getUser() {
-        return users;
+    public List<User> getUsers() {
+        List<User> usersList = new ArrayList<>();
+        for (Map.Entry<Integer, User> entry : users.entrySet()) {
+            usersList.add(entry.getValue());
+        }
+        return usersList;
     }
 
     @PostMapping("users")
@@ -33,6 +39,7 @@ public class UserController {
             user.setName(user.getLogin());
         }
         users.put(user.getId(), user);
+        log.info("Текущее количество пользователей: {}", users.size());
         return user;
     }
 
@@ -41,8 +48,10 @@ public class UserController {
         for (Map.Entry<Integer, User> entry : users.entrySet()) {
             if (user.getId() == entry.getKey()) {
                 users.put(user.getId(), user);
+                log.info("Пользователь с ID {} обновлен!", user.getId());
             } else {
-                throw new UserPutException("Такого пользователя не существует");
+                log.warn("Пользователь с ID {} не найден!", user.getId());
+                throw new InputException("Такого пользователя не существует");
             }
         }
         return user;
