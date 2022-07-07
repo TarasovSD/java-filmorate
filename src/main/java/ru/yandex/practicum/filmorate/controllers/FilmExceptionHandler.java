@@ -1,0 +1,17 @@
+package ru.yandex.practicum.filmorate.controllers;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
+
+@RestControllerAdvice(assignableTypes = {FilmController.class})
+public class FilmExceptionHandler {
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<String> handleValidationException() {
+        return new ResponseEntity<>("Bad Request", HttpStatus.BAD_REQUEST);
+
+    }
+}

@@ -90,14 +90,9 @@ class FilmControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.put("/films")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\n" +
-                                "  \"id\": 1,\n" +
-                                "  \"name\": \"Film Updated\",\n" +
-                                "  \"releaseDate\": \"1989-04-17\",\n" +
-                                "  \"description\": \"New film update decription\",\n" +
-                                "  \"duration\": 190,\n" +
-                                "  \"rate\": 4\n" +
-                                "}"))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                        .content("{\"id\": 1,\"name\": \"new\",\"description\": \"new description\",\"releaseDate\": \"1987-03-25\",\"duration\": 200}"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json("{\"id\": 1,\"name\": \"new\",\"description\": \"new description\",\"releaseDate\": \"1987-03-25\",\"duration\": 200}"));
+
     }
 }
