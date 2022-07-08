@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.controllers;
 
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.InputException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -11,12 +10,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 @RestController
 @Slf4j
 public class UserController {
-    private HashMap<Integer, User> users = new HashMap<>();
+    private Map<Long, User> users = new HashMap<>();
 
     private int generatorId = 1;
 
@@ -24,7 +22,7 @@ public class UserController {
     @GetMapping("users")
     public List<User> getUsers() {
         List<User> usersList = new ArrayList<>();
-        for (Map.Entry<Integer, User> entry : users.entrySet()) {
+        for (Map.Entry<Long, User> entry : users.entrySet()) {
             usersList.add(entry.getValue());
         }
         return usersList;
@@ -45,7 +43,7 @@ public class UserController {
 
     @PutMapping("users")
     public User updateUser(@Valid @RequestBody User user) {
-        for (Map.Entry<Integer, User> entry : users.entrySet()) {
+        for (Map.Entry<Long, User> entry : users.entrySet()) {
             if (user.getId() == entry.getKey()) {
                 users.put(user.getId(), user);
                 log.info("Пользователь с ID {} обновлен!", user.getId());
