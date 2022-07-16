@@ -14,7 +14,7 @@ import java.util.Map;
 @Slf4j
 public class InMemoryFilmStorage implements FilmStorage {
 
-    private Map<Long, Film> films = new HashMap<>();
+    private final Map<Long, Film> films = new HashMap<>();
     private int generatorId = 1;
 
     @Override
@@ -47,10 +47,11 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film getFilmById(long filmId) {
-       long i = -1;
+        long i = -1;
         for (long filmIdFromMap : films.keySet()) {
             if (filmId == filmIdFromMap) {
                 i = filmId;
+                break;
             }
         }
         if (i >= 0) {

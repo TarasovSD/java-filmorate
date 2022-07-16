@@ -35,5 +35,4 @@ public class Film {
 
     @JsonIgnore
     private Set<Long> idsOfLikers = new HashSet<>();
-
 }

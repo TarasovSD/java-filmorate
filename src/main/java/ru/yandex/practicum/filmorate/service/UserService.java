@@ -19,12 +19,12 @@ public class UserService {
     private UserStorage inMemoryUserStorage;
 
     public List<User> getUsers() {
-            return inMemoryUserStorage.getUsers();
+        return inMemoryUserStorage.getUsers();
     }
 
     public User getUserById(Long id) {
-        User user = inMemoryUserStorage.getUserById(id);
-        return user;
+        User userById = inMemoryUserStorage.getUserById(id);
+        return userById;
     }
 
     public User createUser(User user) {
@@ -51,10 +51,9 @@ public class UserService {
     public void DeleteUserFromFriends(Long id, Long friendId) {
         User userOne = inMemoryUserStorage.getUserById(id);
         User userTwo = inMemoryUserStorage.getUserById(friendId);
-        checkUsers(friendId, id, userTwo, userOne);
-        checkUsers(id, friendId, userOne, userTwo);
+        checkAndRemoveUsers(friendId, id, userTwo, userOne);
+        checkAndRemoveUsers(id, friendId, userOne, userTwo);
     }
-
 
 
     public Set<User> getUserFriends(Long id) {
@@ -75,34 +74,20 @@ public class UserService {
         return result;
     }
 
-    private void checkUsers(Long id, Long friendId, User userOne, User userTwo) {
+    private void checkAndRemoveUsers(Long id, Long friendId, User userOne, User userTwo) {
         Set<User> userTwoFriends = userTwo.getFriends();
         User userToRemove = null;
         for (User user : userTwoFriends) {
             if (user.getId() == userOne.getId()) {
-//                userTwoFriends.remove(userOne);
-//                userTwo.setFriends(userTwoFriends);
                 userToRemove = user;
-
             }
         }
         if (userToRemove != null) {
-                userTwoFriends.remove(userToRemove);
-                userTwo.setFriends(userTwoFriends);
+            userTwoFriends.remove(userToRemove);
+            userTwo.setFriends(userTwoFriends);
         } else {
             log.warn("Пользователя с ID {} нет в списке друзей пользователя с ID {}", id, friendId);
             throw new NotFoundException("Такого пользователя нет в списке друзей!");
         }
-
-//        for (int i = 0; i < userTwoFriends.size(); i++) {
-//            User user = userTwoFriends.get(i);
-//            if (user.getId() == userOne.getId()) {
-//                userTwoFriends.remove(userOne);
-//                userTwo.setFriends(userTwoFriends);
-//            } else {
-//                log.warn("Пользователя с ID {} нет в списке друзей пользователя с ID {}", id, friendId);
-//                throw new NotFoundException("Такого пользователя нет в списке друзей!");
-//            }
-//        }
     }
 }

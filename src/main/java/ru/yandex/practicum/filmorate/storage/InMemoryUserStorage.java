@@ -5,17 +5,14 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Component
 @Slf4j
 public class InMemoryUserStorage implements UserStorage {
 
-    private Map<Long, User> users = new HashMap<>();
+    private final Map<Long, User> users = new HashMap<>();
 
     private int generatorId = 1;
 
@@ -57,25 +54,12 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User getUserById(Long id) {
-//        User user = null;
-//        for (Long userId : users.keySet()) {
-//            if (userId == id) {
-//                user = users.get(id);
-//            }
-//        }
-//        if (user != null) {
-//            return user;
-//        } else {
-//            log.warn("Пользователь с ID {} не найден!", id);
-//            throw new NotFoundException("Такого пользователя не существует");
         User user = null;
         for (Map.Entry<Long, User> entry : users.entrySet()) {
-            if (id == entry.getKey()) {
+            if (Objects.equals(id, entry.getKey())) {
                 user = entry.getValue();
-                log.info("Возвращен пользователь с ID {}!", user.getId());
             }
         }
-
         if (user != null) {
             return user;
         } else {
