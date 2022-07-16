@@ -1,56 +1,64 @@
 package ru.yandex.practicum.filmorate.controllers;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.InputException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
+@RequestMapping("films")
 @Slf4j
 public class FilmController {
 
-    private Map<Long, Film> films = new HashMap<>();
-    private int generatorId = 1;
+    @Autowired
+    private FilmService filmService;
 
-    @PostMapping("films")
+    @PostMapping()
     public Film createFilm(@Valid @RequestBody Film film) {
         validate(film);
-        film.setId(generatorId);
-        generatorId++;
-        films.put(film.getId(), film);
+        filmService.createFilm(film);
         log.info("Фильм с названием {} и ID {} добавлен в список сохраненных для просмотра фильмов!", film.getName(), film.getId());
         return film;
     }
 
-    @GetMapping("films")
+    @GetMapping()
     public List<Film> getFilms() {
-        List<Film> filmsList = new ArrayList<>();
-        for (Map.Entry<Long, Film> entry : films.entrySet()) {
-            filmsList.add(entry.getValue());
-        }
-        return filmsList;
+        return filmService.getFilms();
     }
 
-    @PutMapping("films")
+    @GetMapping("/{filmId}")
+    public Film getFilmById(@PathVariable Long filmId) {
+        validateFilmId(filmId);
+        return filmService.getFilmById(filmId);
+    }
+
+    @PutMapping()
     public Film updateFilm(@Valid @RequestBody Film film) {
-        for (Map.Entry<Long, Film> entry : films.entrySet()) {
-            if (film.getId() == entry.getKey()) {
-                films.put(film.getId(), film);
-                log.info("Фильм с ID {} обновлен!", film.getId());
-            } else {
-                log.info("Невозможно обновить фильм с ID {}, так как он не был добавлен в список сохраненных для просмотра фильмов!", film.getId());
-                throw new InputException("Такого фильма нет в списке сохраненных для просмотра фильмов!");
-            }
-        }
-        return film;
+        validateFilmId(film.getId());
+        return filmService.updateFilm(film);
+    }
+
+
+    @DeleteMapping("/{id}/like/{userId}")
+    public void deleteLike(@PathVariable long id, @PathVariable long userId) {
+        filmService.deleteLike(id, userId);
+    }
+
+    @GetMapping("/popular")
+    public List<Film> getListOfFilmsByNumberOfLikes(@RequestParam(defaultValue = "10") Integer count) {
+        return filmService.getListOfFilmsByNumberOfLikes(count);
+    }
+
+    @PutMapping("/{id}/like/{userId}")
+    public Film likeFilm(@PathVariable long id, @PathVariable long userId) {
+        return filmService.likeFilm(id, userId);
     }
 
     private Film validate(Film film) {
@@ -59,6 +67,13 @@ public class FilmController {
         } else {
             log.info("Указана дата релиза фильма {} ранее 28.12.1895", film.getName());
             throw new ValidationException("Дата релиза не может быть раньше 28.12.1895");
+        }
+    }
+
+    private void validateFilmId(Long filmId) {
+        if (filmId < 0) {
+            log.info("В url передано отрицательное значения параметра filmId: {}", filmId);
+            throw new NotFoundException("Id фильма в ссылке должно быть больше 0!");
         }
     }
 }
