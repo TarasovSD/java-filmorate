@@ -15,30 +15,33 @@ import java.util.Set;
 @Slf4j
 public class UserService {
 
+    private final UserStorage userStorage;
+
     @Autowired
-    private UserStorage inMemoryUserStorage;
+    public UserService(UserStorage userStorage) {
+        this.userStorage = userStorage;
+    }
 
     public List<User> getUsers() {
-        return inMemoryUserStorage.getUsers();
+        return userStorage.getUsers();
     }
 
     public User getUserById(Long id) {
-        User userById = inMemoryUserStorage.getUserById(id);
-        return userById;
+        return userStorage.getUserById(id);
     }
 
     public User createUser(User user) {
-        return inMemoryUserStorage.createUser(user);
+        return userStorage.createUser(user);
     }
 
 
     public User updateUser(User user) {
-        return inMemoryUserStorage.updateUser(user);
+        return userStorage.updateUser(user);
     }
 
     public void AddUserAsFriendUser(Long id, Long friendId) {
-        User userToAddAsFriend = inMemoryUserStorage.getUserById(id);
-        User userForAddAsFriend = inMemoryUserStorage.getUserById(friendId);
+        User userToAddAsFriend = userStorage.getUserById(id);
+        User userForAddAsFriend = userStorage.getUserById(friendId);
         Set<User> friendsUserToAddAsFriend = userToAddAsFriend.getFriends();
         friendsUserToAddAsFriend.add(userForAddAsFriend);
         userToAddAsFriend.setFriends(friendsUserToAddAsFriend);
@@ -49,20 +52,20 @@ public class UserService {
     }
 
     public void DeleteUserFromFriends(Long id, Long friendId) {
-        User userOne = inMemoryUserStorage.getUserById(id);
-        User userTwo = inMemoryUserStorage.getUserById(friendId);
+        User userOne = userStorage.getUserById(id);
+        User userTwo = userStorage.getUserById(friendId);
         checkAndRemoveUsers(friendId, id, userTwo, userOne);
         checkAndRemoveUsers(id, friendId, userOne, userTwo);
     }
 
 
     public Set<User> getUserFriends(Long id) {
-        return inMemoryUserStorage.getUserById(id).getFriends();
+        return userStorage.getUserById(id).getFriends();
     }
 
     public Set<User> getUserListOfMutualFriends(Long id, Long otherId) {
-        User userOne = inMemoryUserStorage.getUserById(id);
-        User userTwo = inMemoryUserStorage.getUserById(otherId);
+        User userOne = userStorage.getUserById(id);
+        User userTwo = userStorage.getUserById(otherId);
         Set<User> userOneFriends = userOne.getFriends();
         Set<User> userTwoFriends = userTwo.getFriends();
         Set<User> result = new HashSet<>();

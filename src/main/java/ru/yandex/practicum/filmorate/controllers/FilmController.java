@@ -17,8 +17,12 @@ import java.util.List;
 @Slf4j
 public class FilmController {
 
+    private final FilmService filmService;
+
     @Autowired
-    private FilmService filmService;
+    public FilmController(FilmService filmService) {
+        this.filmService = filmService;
+    }
 
     @PostMapping()
     public Film createFilm(@Valid @RequestBody Film film) {
