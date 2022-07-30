@@ -1,20 +1,39 @@
 package ru.yandex.practicum.filmorate.controllers;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
+@ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = FilmController.class)
+@AutoConfigureMockMvc
 class FilmControllerTest {
 
     @Autowired
+    @MockBean
+    private FilmService filmService;
+    @Autowired
+    @MockBean
+    private FilmStorage filmStorage;
+    @MockBean
+    private Film film;
+    @Autowired
     MockMvc mockMvc;
+
+
 
     @Test
     void createFilm() throws Exception {
@@ -79,20 +98,5 @@ class FilmControllerTest {
         ResultActions result = mockMvc.perform(request);
         result.andExpect(MockMvcResultMatchers.status().isOk());
         result.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
-    }
-
-    @Test
-    void updateFilm() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/films")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\": \"nisi eiusmod\",\"description\": \"adipisicing\",\"releaseDate\": \"1967-03-25\",\"duration\": 100}"))
-                .andExpect(MockMvcResultMatchers.status().isOk());
-
-        mockMvc.perform(MockMvcRequestBuilders.put("/films")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"id\": 1,\"name\": \"new\",\"description\": \"new description\",\"releaseDate\": \"1987-03-25\",\"duration\": 200}"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().json("{\"id\": 1,\"name\": \"new\",\"description\": \"new description\",\"releaseDate\": \"1987-03-25\",\"duration\": 200}"));
-
     }
 }
