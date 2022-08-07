@@ -13,12 +13,8 @@ create table USERS
     LOGIN         CHARACTER VARYING(50)  not null,
     USER_NAME     CHARACTER VARYING(100) not null,
     BIRTHDAY      DATE                   not null,
-    STATUS_ID     INTEGER                not null,
     constraint USER_ID
-        primary key (USER_ID),
-    constraint USERS_STATUSES_STATUS_ID_FK
-        foreign key (STATUS_ID) references STATUSES
-
+        primary key (USER_ID)
 );
 
 create unique index USERS_LOGIN_UNQ
