@@ -21,3 +21,5 @@ merge into GENRES(GENRE_ID, GENRE_NAME)
     values (5, 'Документальный');
 merge into GENRES(GENRE_ID, GENRE_NAME)
     values (6, 'Боевик');
+merge into GENRES(GENRE_ID, GENRE_NAME)
+    values (7, 'Жанр отсутствует');

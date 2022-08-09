@@ -46,11 +46,15 @@ create table FILMS
     DURATION     INTEGER                 not null,
     RATE         INTEGER,
     MPA_ID       INTEGER                 not null,
-    GENRE_ID     INTEGER                 not null,
     constraint FILM_ID
         primary key (FILM_ID),
     constraint FILMS_MPA_MPA_ID_FK
-        foreign key (MPA_ID) references MPA,
-    constraint FILMS_GENRES_GENRE_ID_FK
-        foreign key (GENRE_ID) references GENRES
+        foreign key (MPA_ID) references MPA
 );
+
+CREATE TABLE FILMS_TO_GENRES
+(
+    FILM_ID  INTEGER references FILMS(FILM_ID),
+    GENRE_ID INTEGER references GENRES(GENRE_ID)
+);
+

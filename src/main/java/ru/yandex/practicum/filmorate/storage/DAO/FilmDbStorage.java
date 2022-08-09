@@ -21,7 +21,7 @@ import java.util.Optional;
 @Repository
 @Slf4j
 @Primary
-public class FilmDbStorage  implements FilmStorage {
+public class FilmDbStorage implements FilmStorage {
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -31,46 +31,36 @@ public class FilmDbStorage  implements FilmStorage {
 
     @Override
     public Film createFilm(Film film) {
-        String sqlQuery = "insert into FILMS (FILM_NAME, DESCRIPTION, RELEASE_DATE, DURATION, RATE, MPA_ID, GENRE_ID)" +
-                "values (?, ?, ?, ?, ?, ?, ?)";
+        String sqlQuery = "insert into FILMS (FILM_NAME, DESCRIPTION, RELEASE_DATE, DURATION, RATE, MPA_ID)" +
+                "values (?, ?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement stmt = connection.prepareStatement(sqlQuery, new String[]{"FILM_ID"});
+            stmt.setString(1, film.getName());
+            stmt.setString(2, film.getDescription());
+            final LocalDate releaseDate = film.getReleaseDate();
+            if (releaseDate == null) {
+                stmt.setNull(3, Types.DATE);
+            } else {
+                stmt.setDate(3, Date.valueOf(releaseDate));
+            }
+            stmt.setInt(4, film.getDuration());
+            stmt.setInt(5, film.getCountOfLikes());
+            stmt.setInt(6, film.getMpa().getId());
+            return stmt;
+        }, keyHolder);
         if (film.getGenres() != null) {
-            for (int i = 0; i < film.getGenres().size(); i++) {
-                int finalI = i;
+            String sqlQueryForFilmsToGenres = "insert into FILMS_TO_GENRES (FILM_ID, GENRE_ID)" +
+                    "values (?, ?)";
+            for (Genre genre : film.getGenres()) {
                 jdbcTemplate.update(connection -> {
-                    PreparedStatement stmt = connection.prepareStatement(sqlQuery, new String[]{"FILM_ID"});
-                    stmt.setString(1, film.getName());
-                    stmt.setString(2, film.getDescription());
-                    final LocalDate releaseDate = film.getReleaseDate();
-                    if (releaseDate == null) {
-                        stmt.setNull(3, Types.DATE);
-                    } else {
-                        stmt.setDate(3, Date.valueOf(releaseDate));
-                    }
-                    stmt.setInt(4, film.getDuration());
-                    stmt.setInt(5, film.getCountOfLikes());
-                    stmt.setInt(6, film.getMpa().getId());
-                    stmt.setInt(7, film.getGenres().get(finalI).getId());
+                    PreparedStatement stmt = connection.prepareStatement(sqlQueryForFilmsToGenres);
+                    stmt.setLong(1, film.getId());
+                    stmt.setLong(2, genre.getId());
                     return stmt;
                 }, keyHolder);
             }
-        } else {
-            jdbcTemplate.update(connection -> {
-                PreparedStatement stmt = connection.prepareStatement(sqlQuery, new String[]{"FILM_ID"});
-                stmt.setString(1, film.getName());
-                stmt.setString(2, film.getDescription());
-                final LocalDate releaseDate = film.getReleaseDate();
-                if (releaseDate == null) {
-                    stmt.setNull(3, Types.DATE);
-                } else {
-                    stmt.setDate(3, Date.valueOf(releaseDate));
-                }
-                stmt.setInt(4, film.getDuration());
-                stmt.setInt(5, film.getCountOfLikes());
-                stmt.setInt(6, film.getMpa().getId());
-                stmt.setInt(7, Types.INTEGER);
-                return stmt;
-            }, keyHolder);
+
         }
         return Optional.ofNullable(keyHolder.getKey())
                 .map(Number::longValue)
@@ -92,10 +82,11 @@ public class FilmDbStorage  implements FilmStorage {
                 "F.MPA_ID," +
                 "M.MPA_NAME," +
                 "G.GENRE_NAME," +
-                "F.GENRE_ID from FILMS F " +
+                "FTG.GENRE_ID from FILMS F " +
                 "inner join MPA M on M.MPA_ID = F.MPA_ID " +
-                "inner join GENRES G on G.GENRE_ID = F.GENRE_ID";
-            return jdbcTemplate.query(sqlQuery, FilmDbStorage::makeFilm);
+                "inner join FILMS_TO_GENRES FTG on FTG.FILM_ID = F.FILM_ID " +
+                "inner join GENRES G on FTG.GENRE_ID = G.GENRE_ID";
+        return jdbcTemplate.query(sqlQuery, FilmDbStorage::makeFilm);
     }
 
     @Override
@@ -120,6 +111,16 @@ public class FilmDbStorage  implements FilmStorage {
 
     @Override
     public Film getFilmById(long filmId) {
+        if (filmId <= 0) {
+            throw new NotFoundException("Фильм с таким id не найден!");
+        }
+        String sqlQueryToFindGenres = "select " +
+                "F.FILM_ID," +
+                "G.GENRE_ID from FILMS F " +
+                "inner join FILMS_TO_GENRES FTG on FTG.FILM_ID = F.FILM_ID " +
+                "inner join GENRES G on FTG.GENRE_ID = G.GENRE_ID " +
+                "where F.FILM_ID = ?";
+        jdbcTemplate.queryForObject(sqlQueryToFindGenres, FilmDbStorage::makeGenre, filmId);
         String sqlQuery = "select " +
                 "F.FILM_ID," +
                 "F.FILM_NAME," +
@@ -128,25 +129,45 @@ public class FilmDbStorage  implements FilmStorage {
                 "F.DURATION," +
                 "F.RATE," +
                 "F.MPA_ID," +
-                "M.MPA_NAME," +
-                "G.GENRE_NAME," +
-                "F.GENRE_ID from FILMS F " +
+                "M.MPA_NAME from FILMS F " +
                 "inner join MPA M on M.MPA_ID = F.MPA_ID " +
-                "inner join GENRES G on G.GENRE_ID = F.GENRE_ID " +
                 "where F.FILM_ID = ?";
-        if (filmId >= 0) {
+//        String sqlQuery = "select " +
+//                "F.FILM_ID," +
+//                "F.FILM_NAME," +
+//                "F.DESCRIPTION," +
+//                "F.RELEASE_DATE," +
+//                "F.DURATION," +
+//                "F.RATE," +
+//                "F.MPA_ID," +
+//                "M.MPA_NAME," +
+//                "G.GENRE_NAME," +
+//                "FTG.GENRE_ID from FILMS F " +
+//                "inner join MPA M on M.MPA_ID = F.MPA_ID " +
+//                "inner join FILMS_TO_GENRES FTG on FTG.FILM_ID = F.FILM_ID " +
+//                "inner join GENRES G on FTG.GENRE_ID = G.GENRE_ID " +
+//                "where F.FILM_ID = ?";
+//        if (jdbcTemplate.queryForObject(sqlQuery, FilmDbStorage::makeFilm, filmId) != null) {
             return jdbcTemplate.queryForObject(sqlQuery, FilmDbStorage::makeFilm, filmId);
-        } else {
-            throw new NotFoundException("Фильм с таким id не найден!");
-        }
+//        }
+
+
     }
-    private static Film makeFilm(ResultSet rs, int rowNum) throws SQLException {
-        List <Genre> listOfGenres = new ArrayList<>();
+
+    private static Genre makeGenre(ResultSet resultSet, int rowNum) {
+        List <Genre> genres = new ArrayList<>();
         for (int i = 0; i <= rowNum; i++) {
-            if ((Integer) rs.getInt("GENRE_ID") != null) {
-                listOfGenres.add(new Genre(rs.getInt("GENRE_ID"), rs.getString("GENRE_NAME")));
-            }
+
+           genres.add()
         }
+        return Genre.b
+    }
+
+    private static Film makeFilm(ResultSet rs, int rowNum) throws SQLException {
+        List<Genre> listOfGenres = new ArrayList<>();
+//        for (int i = 0; i <= rowNum; i++) {
+//            listOfGenres.add(new Genre(rs.getInt("GENRE_ID"), rs.getString("GENRE_NAME")));
+//        }
         return Film.builder()
                 .id(rs.getLong("FILM_ID"))
                 .name(rs.getString("FILM_NAME"))
