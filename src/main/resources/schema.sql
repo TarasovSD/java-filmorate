@@ -1,9 +1,7 @@
-create table STATUSES
+create table FRIEND_STATUS
 (
-    STATUS_ID     INTEGER auto_increment,
-    STATUS_NAME   CHARACTER VARYING(16),
-    constraint STATUS_ID
-        primary key (STATUS_ID)
+    USER_ID     INTEGER not null,
+    FRIEND_ID   INTEGER not null
 );
 
 create table USERS
@@ -25,23 +23,15 @@ create unique index USERS_EMAIL_UNQ
 
 create table GENRES
 (
-    GENRE_ID   INTEGER auto_increment,
-    GENRE_NAME CHARACTER VARYING(20) not null
+    GENRE_ID   INTEGER               not null,
+    GENRE_NAME CHARACTER VARYING(20) not null,
+    constraint GENRE_ID
+        primary key (GENRE_ID)
 );
-
-create unique index GENRE_ID_UNQ
-    on GENRES (GENRE_ID);
-
-create unique index GENRE_NAME_UNQ
-    on GENRES (GENRE_ID);
-
-alter table GENRES
-    add constraint GENRE_ID
-        primary key (GENRE_ID);
 
 create table MPA
 (
-    MPA_ID   INTEGER auto_increment,
+    MPA_ID   INTEGER,
     MPA_NAME CHARACTER VARYING(10) not null,
     constraint MPA_ID
         primary key (MPA_ID)
@@ -55,12 +45,12 @@ create table FILMS
     RELEASE_DATE DATE                    not null,
     DURATION     INTEGER                 not null,
     RATE         INTEGER,
-    GENRE_ID     INTEGER                 not null,
     MPA_ID       INTEGER                 not null,
+    GENRE_ID     INTEGER                 not null,
     constraint FILM_ID
         primary key (FILM_ID),
+    constraint FILMS_MPA_MPA_ID_FK
+        foreign key (MPA_ID) references MPA,
     constraint FILMS_GENRES_GENRE_ID_FK
-        foreign key (GENRE_ID) references GENRES,
-    constraint FILMS_MPA_GENRE_ID_FK
-        foreign key (MPA_ID) references MPA
+        foreign key (GENRE_ID) references GENRES
 );

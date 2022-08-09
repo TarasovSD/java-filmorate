@@ -21,8 +21,3 @@ merge into GENRES(GENRE_ID, GENRE_NAME)
     values (5, 'Документальный');
 merge into GENRES(GENRE_ID, GENRE_NAME)
     values (6, 'Боевик');
-
-merge into STATUSES(STATUS_ID, STATUS_NAME)
-    values (1, 'подтверждённая');
-merge into STATUSES(STATUS_ID, STATUS_NAME)
-    values (2, 'неподтверждённая');

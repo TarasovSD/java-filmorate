@@ -43,26 +43,27 @@ public class FilmService {
     }
 
     public Film likeFilm(long id, long userId) {
-        Film filmToSetLike = filmStorage.getFilmById(id);
-        validate(filmToSetLike);
-        Set<Long> idsOfLikers = filmToSetLike.getIdsOfLikers();
-        idsOfLikers.add(userId);
-        filmToSetLike.setIdsOfLikers(idsOfLikers);
-        filmToSetLike.setCountOfLikes(filmToSetLike.getCountOfLikes() + 1);
-        log.info("Пользователь с ID {} поставил лайк фильму {} с ID {}", userId, filmToSetLike.getName(), id);
-        return filmStorage.updateFilm(filmToSetLike);
+//        Film filmToSetLike = filmStorage.getFilmById(id);
+//        validate(filmToSetLike);
+//        Set<Long> idsOfLikers = filmToSetLike.getIdsOfLikers();
+//        idsOfLikers.add(userId);
+//        filmToSetLike.setIdsOfLikers(idsOfLikers);
+//        filmToSetLike.setCountOfLikes(filmToSetLike.getCountOfLikes() + 1);
+//        log.info("Пользователь с ID {} поставил лайк фильму {} с ID {}", userId, filmToSetLike.getName(), id);
+//        return filmStorage.updateFilm(filmToSetLike);
+        return null;
     }
 
     public void deleteLike(long id, long userId) {
-        Film filmToDeleteLike = filmStorage.getFilmById(id);
-        validate(filmToDeleteLike);
-        checkLikesCount(filmToDeleteLike);
-        Set<Long> idsOfLikers = filmToDeleteLike.getIdsOfLikers();
-        idsOfLikers.remove(userId);
-        filmToDeleteLike.setIdsOfLikers(idsOfLikers);
-        filmStorage.updateFilm(filmToDeleteLike);
-        filmToDeleteLike.setCountOfLikes(filmToDeleteLike.getCountOfLikes() - 1);
-        log.info("Пользователь с ID {} удалил лайк фильму {} с ID {}", userId, filmToDeleteLike.getName(), id);
+//        Film filmToDeleteLike = filmStorage.getFilmById(id);
+//        validate(filmToDeleteLike);
+//        checkLikesCount(filmToDeleteLike);
+//        Set<Long> idsOfLikers = filmToDeleteLike.getIdsOfLikers();
+//        idsOfLikers.remove(userId);
+//        filmToDeleteLike.setIdsOfLikers(idsOfLikers);
+//        filmStorage.updateFilm(filmToDeleteLike);
+//        filmToDeleteLike.setCountOfLikes(filmToDeleteLike.getCountOfLikes() - 1);
+//        log.info("Пользователь с ID {} удалил лайк фильму {} с ID {}", userId, filmToDeleteLike.getName(), id);
     }
 
     public List<Film> getListOfFilmsByNumberOfLikes(Integer count) {
