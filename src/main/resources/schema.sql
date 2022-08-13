@@ -1,12 +1,12 @@
-create table FRIEND_STATUS
+create table if not exists FRIEND_STATUS
 (
-    USER_ID     INTEGER not null,
-    FRIEND_ID   INTEGER not null
+    USER_ID     LONG not null,
+    FRIEND_ID   LONG not null
 );
 
-create table USERS
+create table if not exists USERS
 (
-    USER_ID       INTEGER auto_increment,
+    USER_ID       LONG auto_increment,
     USER_EMAIL    CHARACTER VARYING(200),
     LOGIN         CHARACTER VARYING(50)  not null,
     USER_NAME     CHARACTER VARYING(100) not null,
@@ -21,7 +21,7 @@ create unique index USERS_LOGIN_UNQ
 create unique index USERS_EMAIL_UNQ
     on USERS (USER_EMAIL);
 
-create table GENRES
+create table if not exists GENRES
 (
     GENRE_ID   INTEGER               not null,
     GENRE_NAME CHARACTER VARYING(20) not null,
@@ -29,7 +29,7 @@ create table GENRES
         primary key (GENRE_ID)
 );
 
-create table MPA
+create table if not exists MPA
 (
     MPA_ID   INTEGER,
     MPA_NAME CHARACTER VARYING(10) not null,
@@ -37,9 +37,9 @@ create table MPA
         primary key (MPA_ID)
 );
 
-create table FILMS
+create table if not exists FILMS
 (
-    FILM_ID      INTEGER auto_increment,
+    FILM_ID      LONG auto_increment,
     FILM_NAME    CHARACTER VARYING(100)  not null,
     DESCRIPTION  CHARACTER VARYING(1000) not null,
     RELEASE_DATE DATE                    not null,
@@ -52,9 +52,17 @@ create table FILMS
         foreign key (MPA_ID) references MPA
 );
 
-CREATE TABLE FILMS_TO_GENRES
+CREATE TABLE if not exists FILMS_TO_GENRES
 (
-    FILM_ID  INTEGER references FILMS(FILM_ID),
+    FILM_ID  LONG references FILMS(FILM_ID),
     GENRE_ID INTEGER references GENRES(GENRE_ID)
 );
+
+CREATE TABLE if not exists FILMS_TO_USERS
+(
+    FILM_ID  LONG references FILMS(FILM_ID),
+    USER_ID LONG references USERS(USER_ID)
+);
+
+
 

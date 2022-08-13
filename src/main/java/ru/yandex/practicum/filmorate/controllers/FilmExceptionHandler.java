@@ -21,6 +21,6 @@ public class FilmExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<String> handleNotFoundException() {
-        return new ResponseEntity<>("Not Found", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("Object Not Found", HttpStatus.NOT_FOUND);
     }
 }
