@@ -29,10 +29,4 @@ public class User {
     @NotNull
     @Past
     private LocalDate birthday;
-
-//    @JsonIgnore
-//    private Set<User> friends = new HashSet<>();
-
-//    public User(long user_id, String user_email, String login, String name, LocalDate birthday) {
-//    }
 }

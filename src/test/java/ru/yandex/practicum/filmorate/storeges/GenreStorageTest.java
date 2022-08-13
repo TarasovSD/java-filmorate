@@ -140,6 +140,5 @@ public class GenreStorageTest {
                 .hasValueSatisfying(genres ->
                         assertThat(genres.get(5)).hasFieldOrPropertyWithValue("name", "Боевик")
                 );
-
     }
 }

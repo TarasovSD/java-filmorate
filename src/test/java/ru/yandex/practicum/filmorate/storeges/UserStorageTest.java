@@ -53,7 +53,7 @@ public class UserStorageTest {
                         assertThat(user).hasFieldOrPropertyWithValue("name", "Sergey")
                 );
 
-        LocalDate testDate = LocalDate.of(1990,1,1);
+        LocalDate testDate = LocalDate.of(1990, 1, 1);
         assertThat(userOptionalUserId2)
                 .isPresent()
                 .hasValueSatisfying(user ->
@@ -90,7 +90,7 @@ public class UserStorageTest {
                         assertThat(user).hasFieldOrPropertyWithValue("name", "Vlad")
                 );
 
-        LocalDate testDate1 = LocalDate.of(1995,1,1);
+        LocalDate testDate1 = LocalDate.of(1995, 1, 1);
         assertThat(userOptionalUpdateUser)
                 .isPresent()
                 .hasValueSatisfying(user ->
@@ -138,7 +138,7 @@ public class UserStorageTest {
                         assertThat(listUsers.get(1)).hasFieldOrPropertyWithValue("name", "Sergey2")
                 );
 
-        LocalDate testDate2 = LocalDate.of(1996,1,1);
+        LocalDate testDate2 = LocalDate.of(1996, 1, 1);
         assertThat(listOfUsersOptional)
                 .isPresent()
                 .hasValueSatisfying(listUsers ->

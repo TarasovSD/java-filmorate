@@ -165,7 +165,7 @@ public class FilmStorageTest {
                         assertThat(filmList.get(1)).hasFieldOrPropertyWithValue("duration", 100)
                 );
 
-        LocalDate testDate2 = LocalDate.of(1996,1,1);
+        LocalDate testDate2 = LocalDate.of(1996, 1, 1);
         assertThat(listAllFilms)
                 .isPresent()
                 .hasValueSatisfying(filmList ->

@@ -41,7 +41,6 @@ public class FriendsDbStorage implements FriendsStorage {
         }, keyHolder);
     }
 
-
     @Override
     public Set<User> getUserFriends(Long id) {
         String sqlQuery = "select FRIEND_ID from FRIEND_STATUS where USER_ID = ?";
