@@ -1,9 +1,3 @@
-create table if not exists FRIEND_STATUS
-(
-    USER_ID     LONG not null,
-    FRIEND_ID   LONG not null
-);
-
 create table if not exists USERS
 (
     USER_ID       LONG auto_increment,
@@ -20,6 +14,12 @@ create unique index USERS_LOGIN_UNQ
 
 create unique index USERS_EMAIL_UNQ
     on USERS (USER_EMAIL);
+
+create table if not exists FRIEND_STATUS
+(
+    USER_ID     LONG not null references USERS(USER_ID),
+    FRIEND_ID   LONG not null
+);
 
 create table if not exists GENRES
 (

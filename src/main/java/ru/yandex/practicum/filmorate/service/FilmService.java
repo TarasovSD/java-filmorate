@@ -5,26 +5,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.MPA;
 import ru.yandex.practicum.filmorate.storage.DAO.LikesDBStorage;
 import ru.yandex.practicum.filmorate.storage.DAO.MPADBStorage;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.LikesStorage;
-import ru.yandex.practicum.filmorate.storage.MPAStorage;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
 
 @Service
 @Slf4j
 public class FilmService {
 
     private final FilmStorage filmStorage;
-
-    private final MPAStorage mpaStorage;
-
-    private final GenreStorage genreStorage;
 
     private final LikesStorage likesStorage;
 
@@ -33,8 +29,6 @@ public class FilmService {
     @Autowired
     public FilmService(FilmStorage filmStorage, MPADBStorage mpaDBStorage, GenreStorage genreStorage, LikesDBStorage likesStorage) {
         this.filmStorage = filmStorage;
-        this.mpaStorage = mpaDBStorage;
-        this.genreStorage = genreStorage;
         this.likesStorage = likesStorage;
     }
 
@@ -78,22 +72,6 @@ public class FilmService {
         filmStorage.updateFilm(filmToDeleteLike);
         filmToDeleteLike.setCountOfLikes(filmToDeleteLike.getCountOfLikes() - 1);
         log.info("Пользователь с ID {} удалил лайк фильму {} с ID {}", userId, filmToDeleteLike.getName(), id);
-    }
-
-    public List<MPA> getMPA() {
-        return mpaStorage.getMPAs();
-    }
-
-    public MPA getMPAById(long id) {
-        return mpaStorage.getMPAById(id);
-    }
-
-    public List<Genre> getGenres() {
-        return genreStorage.getGenres();
-    }
-
-    public Genre getGenreById(long id) {
-        return genreStorage.getGenreById(id);
     }
 
     public List<Film> getListOfFilmsByNumberOfLikes(Integer count) {

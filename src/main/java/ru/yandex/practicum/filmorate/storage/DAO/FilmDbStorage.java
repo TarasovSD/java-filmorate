@@ -53,7 +53,7 @@ public class FilmDbStorage implements FilmStorage {
                 .map(id -> {
                     film.setId(id);
                     if (film.getGenres() != null) {
-                        SetGenres(film, keyHolder);
+                        setGenres(film, keyHolder);
                     }
                     return film;
                 }).orElse(null);
@@ -107,12 +107,12 @@ public class FilmDbStorage implements FilmStorage {
         }
         if (film.getGenres() != null) {
             KeyHolder keyHolder = new GeneratedKeyHolder();
-            SetGenres(film, keyHolder);
+            setGenres(film, keyHolder);
         }
         return film;
     }
 
-    private Film SetGenres(Film film, KeyHolder keyHolder) {
+    private Film setGenres(Film film, KeyHolder keyHolder) {
         if (film.getGenres().isEmpty()) {
             String filmDeleteGenresQuery = "delete from FILMS_TO_GENRES where FILM_ID = ?";
             jdbcTemplate.update(filmDeleteGenresQuery, film.getId());

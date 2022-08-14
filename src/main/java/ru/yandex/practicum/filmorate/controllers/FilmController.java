@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.MPA;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
@@ -64,26 +62,6 @@ public class FilmController {
     @PutMapping("/films/{id}/like/{userId}")
     public Film likeFilm(@PathVariable long id, @PathVariable long userId) {
         return filmService.likeFilm(id, userId);
-    }
-
-    @GetMapping("/mpa")
-    public List<MPA> getMPA() {
-        return filmService.getMPA();
-    }
-
-    @GetMapping("/mpa/{id}")
-    public MPA getMPAById(@PathVariable long id) {
-        return filmService.getMPAById(id);
-    }
-
-    @GetMapping("/genres")
-    public List<Genre> getGenres() {
-        return filmService.getGenres();
-    }
-
-    @GetMapping("/genres/{id}")
-    public Genre getGenreById(@PathVariable long id) {
-        return filmService.getGenreById(id);
     }
 
     private Film validate(Film film) {
