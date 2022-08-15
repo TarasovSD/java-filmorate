@@ -12,6 +12,8 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
+@EqualsAndHashCode
 public class User {
     @NotNull
     private long id;
@@ -27,7 +29,4 @@ public class User {
     @NotNull
     @Past
     private LocalDate birthday;
-
-    @JsonIgnore
-    private Set<User> friends = new HashSet<>();
 }

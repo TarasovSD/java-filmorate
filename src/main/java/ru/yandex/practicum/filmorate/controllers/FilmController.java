@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("films")
+@RequestMapping
 @Slf4j
 public class FilmController {
 
@@ -24,7 +24,7 @@ public class FilmController {
         this.filmService = filmService;
     }
 
-    @PostMapping()
+    @PostMapping("/films")
     public Film createFilm(@Valid @RequestBody Film film) {
         validate(film);
         filmService.createFilm(film);
@@ -32,34 +32,34 @@ public class FilmController {
         return film;
     }
 
-    @GetMapping()
+    @GetMapping("/films")
     public List<Film> getFilms() {
         return filmService.getFilms();
     }
 
-    @GetMapping("/{filmId}")
+    @GetMapping("/films/{filmId}")
     public Film getFilmById(@PathVariable Long filmId) {
         validateFilmId(filmId);
         return filmService.getFilmById(filmId);
     }
 
-    @PutMapping()
+    @PutMapping("/films")
     public Film updateFilm(@Valid @RequestBody Film film) {
         validateFilmId(film.getId());
         return filmService.updateFilm(film);
     }
 
-    @DeleteMapping("/{id}/like/{userId}")
+    @DeleteMapping("/films/{id}/like/{userId}")
     public void deleteLike(@PathVariable long id, @PathVariable long userId) {
         filmService.deleteLike(id, userId);
     }
 
-    @GetMapping("/popular")
+    @GetMapping("/films/popular")
     public List<Film> getListOfFilmsByNumberOfLikes(@RequestParam(defaultValue = "10") Integer count) {
         return filmService.getListOfFilmsByNumberOfLikes(count);
     }
 
-    @PutMapping("/{id}/like/{userId}")
+    @PutMapping("/films/{id}/like/{userId}")
     public Film likeFilm(@PathVariable long id, @PathVariable long userId) {
         return filmService.likeFilm(id, userId);
     }

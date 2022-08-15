@@ -10,7 +10,8 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
-@RestControllerAdvice(assignableTypes = {FilmController.class, InMemoryFilmStorage.class, InMemoryUserStorage.class, UserController.class, FilmService.class})
+@RestControllerAdvice(assignableTypes = {FilmController.class, InMemoryFilmStorage.class, InMemoryUserStorage.class,
+        UserController.class, FilmService.class, MPAController.class, GenreController.class})
 public class FilmExceptionHandler {
 
     @ExceptionHandler(ValidationException.class)
@@ -21,6 +22,6 @@ public class FilmExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<String> handleNotFoundException() {
-        return new ResponseEntity<>("Not Found", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("Object Not Found", HttpStatus.NOT_FOUND);
     }
 }

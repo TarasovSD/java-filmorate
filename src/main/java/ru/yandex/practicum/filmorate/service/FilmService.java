@@ -5,7 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.DAO.LikesDBStorage;
+import ru.yandex.practicum.filmorate.storage.DAO.MPADBStorage;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.GenreStorage;
+import ru.yandex.practicum.filmorate.storage.LikesStorage;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -18,11 +22,14 @@ public class FilmService {
 
     private final FilmStorage filmStorage;
 
+    private final LikesStorage likesStorage;
+
     private final Comparator<Film> comparator = Comparator.comparing(Film::getCountOfLikes);
 
     @Autowired
-    public FilmService(FilmStorage filmStorage) {
+    public FilmService(FilmStorage filmStorage, MPADBStorage mpaDBStorage, GenreStorage genreStorage, LikesDBStorage likesStorage) {
         this.filmStorage = filmStorage;
+        this.likesStorage = likesStorage;
     }
 
     public Film createFilm(Film film) {
@@ -45,7 +52,7 @@ public class FilmService {
     public Film likeFilm(long id, long userId) {
         Film filmToSetLike = filmStorage.getFilmById(id);
         validate(filmToSetLike);
-        Set<Long> idsOfLikers = filmToSetLike.getIdsOfLikers();
+        Set<Long> idsOfLikers = likesStorage.likeFilm(id, userId);
         idsOfLikers.add(userId);
         filmToSetLike.setIdsOfLikers(idsOfLikers);
         filmToSetLike.setCountOfLikes(filmToSetLike.getCountOfLikes() + 1);
@@ -57,8 +64,10 @@ public class FilmService {
         Film filmToDeleteLike = filmStorage.getFilmById(id);
         validate(filmToDeleteLike);
         checkLikesCount(filmToDeleteLike);
+
+        likesStorage.deleteLikeFilm(id, userId);
+
         Set<Long> idsOfLikers = filmToDeleteLike.getIdsOfLikers();
-        idsOfLikers.remove(userId);
         filmToDeleteLike.setIdsOfLikers(idsOfLikers);
         filmStorage.updateFilm(filmToDeleteLike);
         filmToDeleteLike.setCountOfLikes(filmToDeleteLike.getCountOfLikes() - 1);
