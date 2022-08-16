@@ -7,10 +7,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
-@RestControllerAdvice(assignableTypes = {FilmController.class, InMemoryFilmStorage.class, InMemoryUserStorage.class,
+@RestControllerAdvice(assignableTypes = {FilmController.class,
         UserController.class, FilmService.class, MPAController.class, GenreController.class})
 public class FilmExceptionHandler {
 
