@@ -8,7 +8,7 @@ update USERS SET LOGIN = "Sergey", USER_NAME = "Sergey", USER_EMAIL = "sergey@ya
 
 Основной технологический стек:
 
-Java 11;
-Spring Boot;
-H2;
-Apache Maven.
+- Java 11;
+- Spring Boot;
+- H2;
+- Apache Maven.
